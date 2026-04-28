@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vars.local/contracts/circuit-template.schema.json",
+  "title": "CircuitTemplate",
+  "description": "Curated, read-only definition of a circuit a learner can diagnose and repair. Authored by maintainers; consumed by the runtime. Constitution Principle IV (Curated Circuit Templates) governs all instances.",
+  "type": "object",
+  "required": [
+    "id",
+    "schemaVersion",
+    "displayName",
+    "difficulty",
+    "nodes",
+    "components",
+    "testPoints",
+    "audioOutputNode",
+    "inventory",
+    "expectedHealthyComponents"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]{3}-[a-z0-9-]+$",
+      "description": "NNN-slug identifier matching the file name without extension."
+    },
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1,
+      "description": "Bumps for breaking JSON shape changes; the runtime refuses to load a higher version it doesn't understand."
+    },
+    "displayName": { "type": "string", "minLength": 1 },
+    "difficulty": { "enum": ["basic", "intermediate", "advanced"] },
+    "nodes": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 2,
+      "uniqueItems": true,
+      "description": "All node IDs in the circuit. MUST include 'GND' (the MNA reference)."
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/Component" }
+    },
+    "testPoints": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/TestPoint" },
+      "description": "FR-014: annotated reference panel. Each test point lists its expected healthy voltage."
+    },
+    "audioOutputNode": {
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "null" }
+      ],
+      "description": "Node feeding the Web Audio path. MUST be null for any circuit that ships before the audio path lands."
+    },
+    "inventory": { "$ref": "#/$defs/InventoryConfig" },
+    "expectedHealthyComponents": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/ExpectedComponent" },
+      "description": "What a healthy circuit looks like. Used by the repair-verification check."
+    }
+  },
+  "$defs": {
+    "ComponentType": {
+      "enum": ["resistor", "capacitor", "inductor", "voltage-source"]
+    },
+    "FailureMode": {
+      "enum": ["nominal", "shorted", "open", "degraded"]
+    },
+    "Component": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "nominalValue",
+        "actualValue",
+        "failureMode",
+        "position",
+        "nodes"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "type": { "$ref": "#/$defs/ComponentType" },
+        "nominalValue": { "type": "number", "exclusiveMinimum": 0 },
+        "actualValue": { "type": "number", "exclusiveMinimum": 0 },
+        "failureMode": { "$ref": "#/$defs/FailureMode" },
+        "position": {
+          "type": "object",
+          "required": ["x", "y"],
+          "additionalProperties": false,
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" }
+          }
+        },
+        "nodes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "MVP scope: 2-terminal components only. Future: 3+ terminal (transistors)."
+        }
+      }
+    },
+    "TestPoint": {
+      "type": "object",
+      "required": ["id", "label", "node", "expectedHealthyVoltage"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "node": { "type": "string", "minLength": 1 },
+        "expectedHealthyVoltage": { "type": "number" },
+        "hint": { "type": "string" }
+      }
+    },
+    "InventoryConfig": {
+      "type": "object",
+      "required": ["entries"],
+      "additionalProperties": false,
+      "properties": {
+        "entries": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/InventoryEntry" },
+          "description": "MVP rule: exactly one correct-value entry plus exactly one wrong-value distractor of the same component type (Q5)."
+        }
+      }
+    },
+    "InventoryEntry": {
+      "type": "object",
+      "required": ["componentType", "value", "count"],
+      "additionalProperties": false,
+      "properties": {
+        "componentType": { "$ref": "#/$defs/ComponentType" },
+        "value": { "type": "number", "exclusiveMinimum": 0 },
+        "count": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "ExpectedComponent": {
+      "type": "object",
+      "required": ["positionId", "type", "expectedValue"],
+      "additionalProperties": false,
+      "properties": {
+        "positionId": {
+          "type": "string",
+          "description": "Matches Component.id in the original (broken) state. Identifies which board position this expectation refers to."
+        },
+        "type": { "$ref": "#/$defs/ComponentType" },
+        "expectedValue": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    }
+  }
+}
