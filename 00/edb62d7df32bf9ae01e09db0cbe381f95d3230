@@ -1,0 +1,35 @@
+specs/001-vintage-amp-repair-sim/contracts/circuit-template.schema.json
+  c52b36fc837d1261 1-157
+specs/001-vintage-amp-repair-sim/contracts/persistence-schema.md
+  c52b36fc837d1261 1-90
+specs/001-vintage-amp-repair-sim/quickstart.md
+  c52b36fc837d1261 1-191
+specs/001-vintage-amp-repair-sim/research.md
+  c52b36fc837d1261 1-163
+.github/copilot-instructions.md
+  c52b36fc837d1261 3-12
+specs/001-vintage-amp-repair-sim/data-model.md
+  c52b36fc837d1261 1-193
+specs/001-vintage-amp-repair-sim/plan.md
+  c52b36fc837d1261 1-135
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "00edb62d7df32bf9ae01e09db0cbe381f95d3230",
+  "prompts": {
+    "c52b36fc837d1261": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cc5c7c08-b808-4712-8a93-7786f13c8ef3",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Kevin Gann",
+      "messages": [],
+      "total_additions": 1010,
+      "total_deletions": 72,
+      "accepted_lines": 939,
+      "overriden_lines": 0
+    }
+  }
+}
