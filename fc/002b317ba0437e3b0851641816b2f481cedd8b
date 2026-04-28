@@ -1,0 +1,23 @@
+specs/001-vintage-amp-repair-sim/spec.md
+  c52b36fc837d1261 8-17,22,26,50,58,86,88,99,103,107,126-127
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "fc002b317ba0437e3b0851641816b2f481cedd8b",
+  "prompts": {
+    "c52b36fc837d1261": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cc5c7c08-b808-4712-8a93-7786f13c8ef3",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Kevin Gann",
+      "messages": [],
+      "total_additions": 21,
+      "total_deletions": 9,
+      "accepted_lines": 21,
+      "overriden_lines": 0
+    }
+  }
+}
